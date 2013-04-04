@@ -95,7 +95,7 @@
 
             // loop through objects
 
-            if ($A.isType('Object', collection)) {
+            if (publik.is('Object', collection)) {
                 for (kindex in collection) {
                     if (collection.hasOwnProperty(kindex)) {
                         callNow(kindex, collection[kindex]);
@@ -106,7 +106,7 @@
 
             // loop through arrays
 
-            if ($A.isType('Array', collection)) {
+            if (publik.is('Array', collection)) {
                 for (kindex = 0, length = collection.length; kindex < length; kindex++) {
                     callNow(kindex, collection[kindex]);
                 }
