@@ -1,7 +1,7 @@
 /***************************************************************************************************
-**$A-utility
+**$A-Utility
 **  d:none
-**
+**  n:contains manageGlobal, Type
 **
 */
 
@@ -10,7 +10,6 @@
     "use strict";
 
     var $A = {};
-    // $P omitted, no privates
 
     /*manageGlobal
     **  d:none
@@ -45,85 +44,75 @@
         }
     }());
 
-    /*getType
+    /*Type
     **  d:none
     **
     **
     */
-    $A.getType = function (obj) {
-        var temp;
+    $A.Type = (function () {
+        var publik = {};
 
-        // fastest, not supported by all browsers
+        publik.get = function (obj) {
+            var temp;
 
-        if (obj.constructor && obj.constructor.name) {
-            return obj.constructor.name;
-        }
+            // fastest, not supported by all browsers
 
-        // 2nd fastest but fails with Null and Array (reports as object)
-
-        temp = typeof obj;
-        if (temp !== 'object') {
-            // make first letter upper case
-            return temp.replace(/^.{1}/, function(match) {
-                return match.toUpperCase();
-            });
-        }
-
-        // slowest but most accurate
-
-        return Object.prototype.toString.call(obj).slice(8, -1);
-    };
-
-    /*isType
-    **  d:getType
-    **  
-    **
-    */
-    $A.isType = function (type, obj) {
-        return $A.getType(obj) === type;
-    };
-
-    /*extend
-    **  d:none
-    **
-    **
-    */
-    $A.extend = function (o1, o2) {
-        var kindex;
-        for (kindex in o2) {
-            if (o2.hasOwnProperty(kindex)) {
-                o1[kindex] = o2[kindex];
+            if (obj.constructor && obj.constructor.name) {
+                return obj.constructor.name;
             }
-        }
-    };
 
-    /*forEach
-    **  d:none
-    **
-    **
-    */
-    $A.forEach = function (collection, callNow) {
-        var kindex,
-            length;
+            // 2nd fastest but fails with Null and Array (reports as object)
 
-        // loop through objects
+            temp = typeof obj;
+            if (temp !== 'object') {
+                // make first letter upper case
+                return temp.replace(/^.{1}/, function(match) {
+                    return match.toUpperCase();
+                });
+            }
 
-        if ($A.isType('Object', collection)) {
-            for (kindex in collection) {
-                if (collection.hasOwnProperty(kindex)) {
+            // slowest but most accurate
+
+            return Object.prototype.toString.call(obj).slice(8, -1);
+        };
+
+        publik.is = function (type, obj) {
+            return $A.getType(obj) === type;
+        };
+
+        publik.extend = function (o1, o2) {
+            var kindex;
+            for (kindex in o2) {
+                if (o2.hasOwnProperty(kindex)) {
+                    o1[kindex] = o2[kindex];
+                }
+            }
+        };
+
+        publik.as = function (collection, callNow) {
+            var kindex,
+                length;
+
+            // loop through objects
+
+            if ($A.isType('Object', collection)) {
+                for (kindex in collection) {
+                    if (collection.hasOwnProperty(kindex)) {
+                        callNow(kindex, collection[kindex]);
+                    }
+                }
+                return;
+            }
+
+            // loop through arrays
+
+            if ($A.isType('Array', collection)) {
+                for (kindex = 0, length = collection.length; kindex < length; kindex++) {
                     callNow(kindex, collection[kindex]);
                 }
             }
-            return;
-        }
-
-        // loop through arrays
-
-        if ($A.isType('Array', collection)) {
-            for (kindex = 0, length = collection.length; kindex < length; kindex++) {
-                callNow(kindex, collection[kindex]);
-            }
-        }
-    };
+        };
+        return publik;
+    }());
 
 }(window));
